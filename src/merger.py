@@ -5,7 +5,7 @@ Auto-Merger – handles automatic merging of approved PRs.
 import json
 import os
 
-from .github_client import GitHubClient
+from github_client import GitHubClient
 
 
 class Merger:

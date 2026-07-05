@@ -2,8 +2,8 @@
 AI Reviewer – analyzes PR diffs and posts review comments.
 """
 
-from .github_client import GitHubClient
-from .ai_client import AIClient
+from github_client import GitHubClient
+from ai_client import AIClient
 
 
 class Reviewer:

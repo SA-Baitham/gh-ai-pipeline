@@ -6,8 +6,8 @@ Triggers on pushes to non-default branches.
 import os
 import re
 
-from .github_client import GitHubClient
-from .ai_client import AIClient
+from github_client import GitHubClient
+from ai_client import AIClient
 
 
 class PRManager:
