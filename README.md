@@ -55,8 +55,8 @@ jobs:
     uses: YOUR_USER/gh-ai-pipeline/.github/workflows/ai-pipeline.yml@main
     with:
       ai_provider: openai
-      ai_model: openrouter/free
-      ai_endpoint: https://openrouter.ai/api/v1
+      ai_model: deepseek-v4-flash-free
+      ai_endpoint: https://opencode.ai/zen/v1
       auto_merge: false
     secrets:
       AI_API_KEY: ${{ secrets.AI_API_KEY }}
@@ -64,12 +64,17 @@ jobs:
 
 > **Note:** Replace `YOUR_USER` with your GitHub username after you fork.
 
-### 3. Get a free OpenRouter key
+### 3. Get an API key
 
-1. Go to [openrouter.ai/keys](https://openrouter.ai/keys)
-2. Sign up (free, no credit card)
-3. Create a key
-4. Add it to your repo: **Settings → Secrets and variables → Actions → `AI_API_KEY`**
+Choose a free AI provider and add its API key:
+
+| Provider | How to get a key |
+|----------|-----------------|
+| **OpenCode Zen** (recommended, free) | Go to [opencode.ai](https://opencode.ai) → sign up → create API key |
+| **OpenRouter** (alternative free tier) | [openrouter.ai/keys](https://openrouter.ai/keys) — free, no credit card |
+| **OpenAI** | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
+
+Add it to your repo: **Settings → Secrets and variables → Actions → `AI_API_KEY`**
 
 ### 4. Test it
 
@@ -84,19 +89,19 @@ That's it. Go check — a PR with an AI-generated title is waiting for you.
 
 ---
 
-> **💡 Note on defaults:** The `openrouter/free` + `https://openrouter.ai/api/v1` defaults
-> in this project are **my personal preference** for testing. You should change them to
-> whatever AI backend works for you — OpenAI, Anthropic, a local model, or any
-> OpenAI-compatible provider. See the table below.
+> **💡 Note on defaults:** The `deepseek-v4-flash-free` + `https://opencode.ai/zen/v1` defaults
+> in this project point to **OpenCode Zen** (free tier). Override `ai_model`, `ai_endpoint`,
+> and `ai_provider` to change the AI backend. See the table below.
 
 ## 🧠 AI Providers
 
-Any OpenAI-compatible API works. The default is OpenRouter's free tier (`openrouter/free`)
-which gives you access to dozens of models at no cost.
+Any OpenAI-compatible API works. The default is **OpenCode Zen** (`deepseek-v4-flash-free` at `https://opencode.ai/zen/v1`)
+which gives you access to DeepSeek V4 Flash for free.
 
 | Provider | Endpoint | API Key |
 |----------|----------|---------|
-| **OpenRouter** (free) | `https://openrouter.ai/api/v1` | Your OpenRouter key |
+| **OpenCode Zen** (recommended, free) | `https://opencode.ai/zen/v1` | Your OpenCode API key |
+| **OpenRouter** (free tier available) | `https://openrouter.ai/api/v1` | Your OpenRouter key |
 | **OpenAI** | `https://api.openai.com/v1` | `sk-...` |
 | **Anthropic** | *(built-in, not OpenAI-compat)* | `sk-ant-...` |
 | **Local** (llama.cpp, vLLM, etc.) | `http://your-server:8080/v1` | Anything |
@@ -128,8 +133,8 @@ with:
 | Input | Default | Description |
 |-------|---------|-------------|
 | `ai_provider` | `openai` | `openai`, `anthropic`, `local` |
-| `ai_model` | `openrouter/free` | Model name |
-| `ai_endpoint` | `https://openrouter.ai/api/v1` | API base URL |
+| `ai_model` | `deepseek-v4-flash-free` | Model name |
+| `ai_endpoint` | `https://opencode.ai/zen/v1` | API base URL |
 | `auto_merge` | `false` | `true` / `false` |
 | `auto_merge_method` | `squash` | `merge`, `squash`, `rebase` |
 | `review_style` | `normal` | `light`, `normal`, `thorough` |
@@ -188,7 +193,7 @@ gh-ai-pipeline/
 
 - **Python 3.11+** (on the GitHub runner)
 - **GitHub token** — built-in `GITHUB_TOKEN` is sufficient
-- **AI API key** — [OpenRouter](https://openrouter.ai/keys) (free), OpenAI, or Anthropic
+- **AI API key** — [OpenCode](https://opencode.ai) (free), [OpenRouter](https://openrouter.ai/keys) (free), OpenAI, or Anthropic
 
 ---
 

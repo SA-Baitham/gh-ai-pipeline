@@ -15,9 +15,9 @@ inputs:
     required: false
     default: ''
   ai_model:
-    description: 'Model name (default: openrouter/free via OpenRouter)'
+    description: 'Model name (default: deepseek-v4-flash-free via OpenCode Zen)'
     required: false
-    default: 'openrouter/free'
+    default: 'deepseek-v4-flash-free'
   ai_endpoint:
     description: 'API endpoint (default: https://openrouter.ai/api/v1)'
     required: false

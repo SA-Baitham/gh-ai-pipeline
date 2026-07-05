@@ -4,19 +4,18 @@
 # Copy this file into YOUR repo at:
 #   .github/workflows/ai-pipeline.yml
 #
-# ⚠️  The defaults below (openrouter/free) are the author's personal
-#     testing setup. Change ai_model, ai_endpoint, and ai_provider to
-#     match YOUR preferred AI backend before using!
+# ⚠️  The defaults below point to OpenCode Zen (free tier: DeepSeek V4 Flash Free).
+#     Override ai_model, ai_endpoint, and ai_provider to match YOUR preferred AI backend.
 #
 # Then configure your repo secrets:
 #   1. Go to Settings → Secrets and variables → Actions
-#   2. Add AI_API_KEY (your OpenRouter/OpenAI/Anthropic API key)
+#   2. Add AI_API_KEY (your OpenCode/OpenRouter/OpenAI/Anthropic API key)
 #
 # Available options – customize the `with:` block below:
 #
 #   ai_provider      : openai (default) | anthropic | local
-#   ai_model         : openrouter/free (default) | gpt-4 | claude-3-opus | ...
-#   ai_endpoint      : https://openrouter.ai/api/v1 (default for OpenRouter)
+#   ai_model         : deepseek-v4-flash-free (default) | gpt-4 | claude-sonnet-5 | ...
+#   ai_endpoint      : https://opencode.ai/zen/v1 (default for OpenCode Zen)
 #   auto_merge       : true | false
 #   auto_merge_method: squash (default) | merge | rebase
 #   review_style     : light | normal (default) | thorough
@@ -33,14 +32,18 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   ai-pipeline:
     # ⚠️ Replace YOUR_USER with your GitHub username
     uses: YOUR_USER/gh-ai-pipeline/.github/workflows/ai-pipeline.yml@main
     with:
       ai_provider: openai
-      ai_model: openrouter/free
-      ai_endpoint: https://openrouter.ai/api/v1
+      ai_model: deepseek-v4-flash-free
+      ai_endpoint: https://opencode.ai/zen/v1
       auto_merge: false
       auto_merge_method: squash
       review_style: normal

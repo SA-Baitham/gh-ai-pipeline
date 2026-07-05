@@ -20,7 +20,7 @@ endpoint: https://openrouter.ai/api/v1
 # OpenAI:     gpt-4, gpt-4-turbo, gpt-3.5-turbo
 # Anthropic:  claude-3-opus, claude-3-sonnet, claude-3-haiku
 # Local:      any model your endpoint serves
-model: openrouter/free
+model: deepseek-v4-flash-free
 
 # ── Review Style ─────────────────────────────────────────────────────────────
 # light    – critical bugs & security only

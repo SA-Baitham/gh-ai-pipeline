@@ -4,9 +4,8 @@
 # Call this from any repo to get automated PR creation, AI code review,
 # and optional auto-merge.
 #
-# ⚠️  The defaults below (openrouter/free) are the author's personal
-#     testing setup. Override ai_model, ai_endpoint, and ai_provider
-#     to match YOUR preferred AI backend.
+# ⚠️  The defaults below point to OpenCode Zen (free tier: DeepSeek V4 Flash Free).
+#     Override ai_model, ai_endpoint, and ai_provider to match YOUR preferred AI backend.
 #
 # Usage in your repo (e.g. .github/workflows/ai.yml):
 #
@@ -39,15 +38,15 @@ on:
         type: string
         default: 'openai'
       ai_model:
-        description: 'AI model name (default: openrouter/free via OpenRouter)'
+        description: 'AI model name (default: deepseek-v4-flash-free via OpenCode Zen)'
         required: false
         type: string
-        default: 'openrouter/free'
+        default: 'deepseek-v4-flash-free'
       ai_endpoint:
-        description: 'API base URL (default: OpenRouter — override for OpenAI/Anthropic/local)'
+        description: 'API base URL (default: OpenCode Zen — override for OpenRouter/OpenAI/Anthropic/local)'
         required: false
         type: string
-        default: 'https://openrouter.ai/api/v1'
+        default: 'https://opencode.ai/zen/v1'
       auto_merge:
         description: 'Enable auto-merge (true/false)'
         required: false

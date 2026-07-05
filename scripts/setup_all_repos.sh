@@ -32,8 +32,8 @@ SKIP="${SKIP_REPOS:-}"
 
 # ── Config (customize these) ─────────────────────────────────────────────────
 AI_PROVIDER="openai"
-AI_MODEL="openrouter/free"
-AI_ENDPOINT="https://openrouter.ai/api/v1"
+AI_MODEL="deepseek-v4-flash-free"
+AI_ENDPOINT="https://opencode.ai/zen/v1"
 AUTO_MERGE="false"
 
 # ── Main ─────────────────────────────────────────────────────────────────────

@@ -15,10 +15,11 @@ class AIClient:
     def __init__(self):
         self.provider = os.environ.get("AI_PROVIDER", "openai").lower()
         self.api_key = os.environ.get("AI_API_KEY", "")
-        self.model = os.environ.get("AI_MODEL", "openrouter/free")
-        self.endpoint = os.environ.get("AI_ENDPOINT", "")
+        self.model = os.environ.get("AI_MODEL", "deepseek-v4-flash-free")
+        self.endpoint = os.environ.get("AI_ENDPOINT", "https://opencode.ai/zen/v1")
         self.review_style = os.environ.get("REVIEW_STYLE", "normal")
         self._is_openrouter = "openrouter" in self.endpoint.lower() if self.endpoint else False
+        self._is_opencode = "opencode.ai" in self.endpoint.lower() if self.endpoint else False
 
     def _build_review_prompt(self, diff: str, file_list: list[str]) -> str:
         """Build a structured prompt for code review."""
@@ -80,10 +81,17 @@ Respond in this JSON format ONLY (no markdown):
 
     # ── OpenAI ───────────────────────────────────────────
 
+    def _normalize_endpoint(self, base_url: str) -> str:
+        """Ensure the endpoint URL includes the /chat/completions path."""
+        url = base_url.rstrip("/")
+        if not url.endswith("/chat/completions"):
+            url += "/chat/completions"
+        return url
+
     def _call_openai(
         self, messages: list[dict], temperature: float = 0.3
     ) -> str | None:
-        url = self.endpoint or "https://api.openai.com/v1/chat/completions"
+        url = self._normalize_endpoint(self.endpoint) if self.endpoint else "https://api.openai.com/v1/chat/completions"
         payload = {
             "model": self.model,
             "messages": messages,

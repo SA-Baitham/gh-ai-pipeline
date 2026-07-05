@@ -8,15 +8,15 @@
 # Examples:
 #   ./scripts/setup_repo.sh SA-Baitham/gpr_diffusion
 #   ./scripts/setup_repo.sh SA-Baitham/freqtrade --ai anthropic --model claude-3-opus
-#   ./scripts/setup_repo.sh SA-Baitham/gpr_data_pipeline --ai openai --model openrouter/free --auto-merge true
+#   ./scripts/setup_repo.sh SA-Baitham/gpr_data_pipeline --ai openai --model deepseek-v4-flash-free --auto-merge true
 # =============================================================================
 
 set -euo pipefail
 
 REPO="${1:?Usage: $0 <owner/repo>}"
 AI_PROVIDER="${2:-openai}"
-AI_MODEL="${3:-openrouter/free}"
-AI_ENDPOINT="${4:-https://openrouter.ai/api/v1}"
+AI_MODEL="${3:-deepseek-v4-flash-free}"
+AI_ENDPOINT="${4:-https://opencode.ai/zen/v1}"
 AUTO_MERGE="${5:-false}"
 
 WORKFLOW_DIR=".github/workflows"
