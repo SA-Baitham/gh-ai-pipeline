@@ -105,7 +105,13 @@ Respond in this JSON format ONLY (no markdown):
         with httpx.Client(timeout=180) as client:
             resp = client.post(url, json=payload, headers=headers)
         if resp.is_success:
-            return resp.json()["choices"][0]["message"]["content"]
+            try:
+                data = resp.json()
+                return data["choices"][0]["message"]["content"]
+            except (json.JSONDecodeError, KeyError, IndexError, TypeError) as e:
+                print(f"⚠️  AI response parse error: {e}")
+                print(f"   Status: {resp.status_code}, Body: {resp.text[:500]}")
+                return None
         else:
             print(f"⚠️  OpenAI API error: {resp.status_code} {resp.text[:300]}")
             return None
@@ -140,8 +146,13 @@ Respond in this JSON format ONLY (no markdown):
         with httpx.Client(timeout=180) as client:
             resp = client.post(url, json=payload, headers=headers)
         if resp.is_success:
-            data = resp.json()
-            return data.get("content", [{}])[0].get("text", "")
+            try:
+                data = resp.json()
+                return data.get("content", [{}])[0].get("text", "")
+            except (json.JSONDecodeError, KeyError, IndexError, TypeError) as e:
+                print(f"⚠️  Anthropic response parse error: {e}")
+                print(f"   Status: {resp.status_code}, Body: {resp.text[:500]}")
+                return None
         else:
             print(f"⚠️  Anthropic API error: {resp.status_code} {resp.text[:300]}")
             return None
