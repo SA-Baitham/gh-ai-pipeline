@@ -1,0 +1,57 @@
+# =============================================================================
+# gh-ai-pipeline – Default Configuration Rules
+# =============================================================================
+# This file documents the available configuration options.
+# Actual config is passed via workflow inputs (see template-workflow.yml).
+
+# ── AI Provider ──────────────────────────────────────────────────────────────
+# Options: openai, anthropic, local
+# Uses OpenRouter by default (OpenAI-compatible endpoint)
+provider: openai
+
+# ── Endpoint ─────────────────────────────────────────────────────────────────
+# OpenRouter: https://openrouter.ai/api/v1
+# OpenAI:     https://api.openai.com/v1
+# Local:      http://your-llm:8080/v1
+endpoint: https://openrouter.ai/api/v1
+
+# ── Model ────────────────────────────────────────────────────────────────────
+# OpenRouter: openrouter/free, openrouter/auto, gpt-4, claude-3-opus, etc.
+# OpenAI:     gpt-4, gpt-4-turbo, gpt-3.5-turbo
+# Anthropic:  claude-3-opus, claude-3-sonnet, claude-3-haiku
+# Local:      any model your endpoint serves
+model: openrouter/free
+
+# ── Review Style ─────────────────────────────────────────────────────────────
+# light    – critical bugs & security only
+# normal   – bugs, security, performance, quality
+# thorough – full deep-dive with edge cases & docs
+review_style: normal
+
+# ── Auto-Merge ───────────────────────────────────────────────────────────────
+auto_merge:
+  enabled: false          # Set to true to enable auto-merge
+  method: squash          # merge | squash | rebase
+
+  # Label-based rules (optional)
+  # Labels that block merging:
+  block_merge_labels:
+    - do-not-merge
+    - work-in-progress
+    - blocked
+
+  # If non-empty, only PRs with these labels get auto-merged:
+  auto_merge_labels: []
+    # - auto-merge
+    # - reviewed
+
+# ── Branch Filters ───────────────────────────────────────────────────────────
+# Branches matching these patterns will be skipped (no PR created)
+skip_branches:
+  - main
+  - master
+  - dependabot/*
+  - renovate/*
+  - wip/*
+  - draft/*
+  - bot/*

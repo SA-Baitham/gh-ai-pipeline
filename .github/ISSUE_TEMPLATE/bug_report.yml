@@ -1,0 +1,38 @@
+name: Bug Report
+description: Something isn't working as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened? What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow config
+      description: Your caller workflow YAML (redact any secrets)
+      render: yaml
+  - type: textarea
+    id: logs
+    attributes:
+      label: Action logs
+      description: Paste the relevant GitHub Actions run log output
+      render: text
+  - type: textarea
+    id: context
+    attributes:
+      label: Environment
+      description: AI provider, model, endpoint, any custom config
+      value: |
+        - AI Provider:
+        - Model:
+        - Endpoint:
+        - Auto-merge:
+    validations:
+      required: false

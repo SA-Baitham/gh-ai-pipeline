@@ -1,0 +1,117 @@
+# =============================================================================
+# gh-ai-pipeline - Reusable Workflow
+# =============================================================================
+# Call this from any repo to get automated PR creation, AI code review,
+# and optional auto-merge.
+#
+# ⚠️  The defaults below (openrouter/free) are the author's personal
+#     testing setup. Override ai_model, ai_endpoint, and ai_provider
+#     to match YOUR preferred AI backend.
+#
+# Usage in your repo (e.g. .github/workflows/ai.yml):
+#
+#   name: AI Pipeline
+#   on:
+#     push:
+#       branches-ignore: [main, master]
+#     pull_request:
+#       types: [opened, synchronize, reopened]
+#
+#   jobs:
+#     ai-pipeline:
+#       uses: SA-Baitham/gh-ai-pipeline/.github/workflows/ai-pipeline.yml@main
+#       secrets:
+#         AI_API_KEY: ${{ secrets.AI_API_KEY }}
+#       with:
+#         ai_provider: openai
+#         ai_model: gpt-4
+#         auto_merge: false
+# =============================================================================
+
+name: AI Pipeline (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      ai_provider:
+        description: 'AI provider (openai, anthropic, local)'
+        required: false
+        type: string
+        default: 'openai'
+      ai_model:
+        description: 'AI model name (default: openrouter/free via OpenRouter)'
+        required: false
+        type: string
+        default: 'openrouter/free'
+      ai_endpoint:
+        description: 'API base URL (default: OpenRouter — override for OpenAI/Anthropic/local)'
+        required: false
+        type: string
+        default: 'https://openrouter.ai/api/v1'
+      auto_merge:
+        description: 'Enable auto-merge (true/false)'
+        required: false
+        type: string
+        default: 'false'
+      auto_merge_method:
+        description: 'Merge method: merge, squash, rebase'
+        required: false
+        type: string
+        default: 'squash'
+      review_style:
+        description: 'Review depth: light, normal, thorough'
+        required: false
+        type: string
+        default: 'normal'
+      label_rules:
+        description: 'JSON label-based merge rules'
+        required: false
+        type: string
+        default: '{}'
+    secrets:
+      AI_API_KEY:
+        description: 'API key for the AI provider'
+        required: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout caller repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout pipeline action
+        uses: actions/checkout@v4
+        with:
+          repository: SA-Baitham/gh-ai-pipeline
+          ref: main
+          path: .github/actions/gh-ai-pipeline
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          pip install -q -r .github/actions/gh-ai-pipeline/requirements.txt
+
+      - name: 🤖 Run AI Pipeline
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AI_PROVIDER: ${{ inputs.ai_provider }}
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_MODEL: ${{ inputs.ai_model }}
+          AI_ENDPOINT: ${{ inputs.ai_endpoint }}
+          HTTP_REFERER: ${{ github.server_url }}/${{ github.repository }}
+          X_TITLE: ${{ github.repository }}
+          AUTO_MERGE: ${{ inputs.auto_merge }}
+          AUTO_MERGE_METHOD: ${{ inputs.auto_merge_method }}
+          REVIEW_STYLE: ${{ inputs.review_style }}
+          LABEL_RULES: ${{ inputs.label_rules }}
+        run: |
+          python .github/actions/gh-ai-pipeline/src/main.py
