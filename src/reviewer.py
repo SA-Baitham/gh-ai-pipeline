@@ -2,6 +2,8 @@
 AI Reviewer – analyzes PR diffs and posts review comments.
 """
 
+import os
+
 from github_client import GitHubClient
 from ai_client import AIClient
 
@@ -56,6 +58,14 @@ class Reviewer:
         # Determine verdict
         verdict = self.ai.extract_verdict(review_text)
         bot_name = "🤖 AI Pipeline"
+
+        # GitHub policy: you can't "request changes" on your own PR.
+        # If the bot (GITHUB_TOKEN) owns the PR, downgrade to COMMENT.
+        pr_user = (pr.get("user") or {}).get("login", "")
+        bot_user = os.environ.get("GITHUB_ACTOR", "github-actions")
+        if verdict == "REQUEST_CHANGES" and pr_user == bot_user:
+            print(f"  ↪️  Downgrading REQUEST_CHANGES → COMMENT (PR owned by bot)")
+            verdict = "COMMENT"
 
         if verdict == "APPROVE":
             full_review = f"## ✅ {bot_name}: Approved\n\n{review_text}"
