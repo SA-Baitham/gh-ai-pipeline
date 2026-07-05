@@ -93,6 +93,7 @@ Respond in this JSON format ONLY (no markdown):
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
+            "User-Agent": "gh-ai-pipeline/1.0",
         }
         # OpenRouter headers for usage tracking
         if self._is_openrouter:
@@ -102,19 +103,58 @@ Respond in this JSON format ONLY (no markdown):
             headers["X-Title"] = os.environ.get(
                 "X_TITLE", "gh-ai-pipeline"
             )
-        with httpx.Client(timeout=180) as client:
-            resp = client.post(url, json=payload, headers=headers)
-        if resp.is_success:
+
+        last_error = None
+        for attempt in range(3):
             try:
-                data = resp.json()
-                return data["choices"][0]["message"]["content"]
-            except (json.JSONDecodeError, KeyError, IndexError, TypeError) as e:
-                print(f"⚠️  AI response parse error: {e}")
-                print(f"   Status: {resp.status_code}, Body: {resp.text[:500]}")
+                with httpx.Client(timeout=180) as client:
+                    resp = client.post(url, json=payload, headers=headers)
+
+                if resp.is_success:
+                    try:
+                        data = resp.json()
+                        return data["choices"][0]["message"]["content"]
+                    except (json.JSONDecodeError, KeyError, IndexError, TypeError) as e:
+                        content_type = resp.headers.get("content-type", "")
+                        body_preview = resp.text[:300]
+                        print(f"⚠️  AI response parse error (attempt {attempt + 1}): {e}")
+                        print(f"   Status: {resp.status_code}, Content-Type: {content_type}")
+                        print(f"   Body: {body_preview}")
+                        # If HTML response (e.g. Cloudflare challenge), don't retry
+                        if "text/html" in content_type:
+                            print("   💡 Received HTML instead of JSON — likely a Cloudflare challenge.")
+                            print("      The CI runner IP may be blocked by the AI endpoint.")
+                            print("      Try using a different AI provider/model or a paid API tier.")
+                            return None
+                        last_error = e
+                        # Retry on empty/non-JSON responses
+                        if attempt < 2:
+                            import time
+                            time.sleep(2 ** attempt)
+                            continue
+                        return None
+                else:
+                    print(f"⚠️  OpenAI API error: {resp.status_code} {resp.text[:300]}")
+                    if resp.status_code == 429 and attempt < 2:
+                        import time
+                        wait = 2 ** attempt
+                        print(f"   Rate limited — retrying in {wait}s...")
+                        time.sleep(wait)
+                        continue
+                    return None
+            except httpx.TimeoutException as e:
+                print(f"⚠️  AI request timeout (attempt {attempt + 1})")
+                last_error = e
+                if attempt < 2:
+                    import time
+                    time.sleep(2 ** attempt)
+                    continue
                 return None
-        else:
-            print(f"⚠️  OpenAI API error: {resp.status_code} {resp.text[:300]}")
-            return None
+            except httpx.RequestError as e:
+                print(f"⚠️  AI request error: {e}")
+                return None
+
+        return None
 
     # ── Anthropic ────────────────────────────────────────
 
