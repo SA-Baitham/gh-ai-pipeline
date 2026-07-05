@@ -24,6 +24,25 @@ Push a branch → AI writes your PR. Open a PR → AI reviews your code. Flip a 
 
 No more pushing straight to main. No more untracked changes. No more manual PR overhead.
 
+```mermaid
+---
+title: gh-ai-pipeline workflow
+---
+flowchart TD
+    Push["git push branch"] --> CreatePR["🤖 AI generates PR title & description"]
+    CreatePR --> PRCreated["✅ PR Created"]
+    PRCreated --> ReviewDiff["🔍 AI reviews the diff"]
+    ReviewDiff --> Verdict{"Verdict?"}
+    Verdict -->|APPROVE| Approve["✅ Approved"]
+    Verdict -->|COMMENT| Comment["💬 Comment posted"]
+    Verdict -->|REQUEST_CHANGES| Changes["❌ Changes Requested"]
+    Approve --> AutoMerge{"Auto-merge on?"}
+    AutoMerge -->|Yes| Merge["🔀 PR Merged"]
+    AutoMerge -->|No| Wait["⏳ Waiting for human"]
+    PRCreated -.->|PR opened/updated| TriggerReview["🔄 Re-triggers review"]
+    TriggerReview --> ReviewDiff
+```
+
 ## 🚀 Quick Start (takes 5 minutes)
 
 ### 1. Fork & push this repo to your GitHub
