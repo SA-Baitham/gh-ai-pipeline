@@ -19,9 +19,9 @@ inputs:
     required: false
     default: 'deepseek-v4-flash-free'
   ai_endpoint:
-    description: 'API endpoint (default: https://openrouter.ai/api/v1)'
+    description: 'API endpoint (default: https://opencode.ai/zen/v1)'
     required: false
-    default: 'https://openrouter.ai/api/v1'
+    default: 'https://opencode.ai/zen/v1'
   auto_merge:
     description: 'Enable auto-merge when review passes (true/false)'
     required: false

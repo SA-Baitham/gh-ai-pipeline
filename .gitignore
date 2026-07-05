@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+.pytest_cache/
 *.py[cod]
 *.egg-info/
 dist/
@@ -23,3 +24,5 @@ Thumbs.db
 
 # GitHub Actions test artifacts
 *.log
+*.mmd
+

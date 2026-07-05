@@ -167,6 +167,20 @@ with:
 | `normal` | Bugs, security, perf, code quality, best practices |
 | `thorough` | Everything + edge cases, error handling, docs, tests |
 
+### How reviews work
+
+After analyzing your code, the AI returns one of three verdicts:
+
+| Verdict | Meaning | Blocks merge? |
+|---------|---------|:---:|
+| **APPROVE** | Code looks good — ready to merge | No |
+| **REQUEST_CHANGES** | Issues found that should be fixed | Yes |
+| **COMMENT** | Questions or suggestions — doesn't block | No |
+
+The verdict is determined by the AI model based on your chosen review style (`light`/`normal`/`thorough`). If auto-merge is enabled, only **APPROVE** verdicts trigger a merge.
+
+> **Note:** When the pipeline runs via `GITHUB_TOKEN` (the default), the bot owns the PR. GitHub policy prevents requesting changes on your own PR, so `REQUEST_CHANGES` is automatically downgraded to `COMMENT` in that case.
+
 ### Label-based merge rules
 
 ```yaml
