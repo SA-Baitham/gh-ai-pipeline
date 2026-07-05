@@ -36,7 +36,7 @@ def get_event_info() -> dict:
 
 
 def handle_push(gh: GitHubClient, ai: AIClient, payload: dict):
-    """Handle a push event – create/update PR for the branch."""
+    """Handle a push event – create/update PR and run AI review."""
     ref = payload.get("ref", "")
     branch = ref.replace("refs/heads/", "")
 
@@ -53,6 +53,15 @@ def handle_push(gh: GitHubClient, ai: AIClient, payload: dict):
 
     if pr:
         print(f"   → PR #{pr['number']} is ready: {pr['html_url']}")
+        # Run AI review immediately (avoids GITHUB_TOKEN recursion limit,
+        # where a PR created by the pipeline won't trigger pull_request events)
+        reviewer = Reviewer(gh, ai)
+        verdict = reviewer.review(pr["number"])
+
+        # Auto-merge if conditions met
+        if verdict == "APPROVE":
+            merger = Merger(gh)
+            merger.try_merge(pr["number"])
 
 
 def handle_pull_request(gh: GitHubClient, ai: AIClient, payload: dict):
