@@ -199,3 +199,12 @@ class GitHubClient:
             self._repo_path(f"/compare/{base}...{head}"),
         )
         return resp.json() if resp.is_success else None
+
+    def get_commits(self, branch: str, per_page: int = 10) -> list[dict]:
+        """Get recent commits on a branch."""
+        resp = self._request(
+            "GET",
+            self._repo_path(f"/commits"),
+            params={"sha": branch, "per_page": per_page},
+        )
+        return resp.json() if resp.is_success else []

@@ -83,6 +83,18 @@ class PRManager:
 
         title, body = self.ai.generate_pr_title(diff_text, branch)
 
+        # If AI title is the generic fallback, try using commit messages
+        if title.startswith("Updates:") or title.startswith("Updates "):
+            commits = self.gh.get_commits(branch, per_page=5)
+            if commits:
+                messages = [c["commit"]["message"].split("\n")[0] for c in commits]
+                if len(messages) == 1:
+                    title = messages[0]
+                else:
+                    title = f"{messages[0]} (+{len(messages) - 1} more)"
+                body = "\n".join(f"- {m}" for m in messages)
+                print(f"📝 Using commit-based title: {title}")
+
         # Add context to body
         enhanced_body = (
             f"{body}\n\n"
